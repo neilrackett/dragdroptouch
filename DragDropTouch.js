@@ -17,7 +17,7 @@ var DragDropTouch;
             this._effectAllowed = 'all';
             this._data = {};
         }
-        Object.defineProperty(DataTransfer.prototype, "dropEffect", {
+        Object.defineProperty(DataTransfer.prototype, 'dropEffect', {
             /**
              * Gets or sets the type of drag-and-drop operation currently selected.
              * The value must be 'none',  'copy',  'link', or 'move'.
@@ -31,7 +31,7 @@ var DragDropTouch;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(DataTransfer.prototype, "effectAllowed", {
+        Object.defineProperty(DataTransfer.prototype, 'effectAllowed', {
             /**
              * Gets or sets the types of operations that are possible.
              * Must be one of 'none', 'copy', 'copyLink', 'copyMove', 'link',
@@ -46,7 +46,7 @@ var DragDropTouch;
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(DataTransfer.prototype, "types", {
+        Object.defineProperty(DataTransfer.prototype, 'types', {
             /**
              * Gets an array of strings giving the formats that were set in the @see:dragstart event.
              */
@@ -168,7 +168,9 @@ var DragDropTouch;
                 // raise double-click and prevent zooming
                 if (Date.now() - this._lastClick < DragDropTouch._DBLCLICK) {
                     if (this._dispatchEvent(e, 'dblclick', e.target)) {
-                        e.preventDefault();
+                        if (e.cancelable) {
+                            e.preventDefault();
+                        }
                         this._reset();
                         return;
                     }
@@ -185,7 +187,9 @@ var DragDropTouch;
                         this._dragSource = src;
                         this._ptDown = this._getPoint(e);
                         this._lastTouch = e;
-                        e.preventDefault();
+                        if (e.cancelable) {
+                            e.preventDefault();
+                        }
                         // show context menu if the user hasn't started dragging after a while
                         setTimeout(function () {
                             if (_this._dragSource == src && _this._img == null) {
@@ -214,8 +218,10 @@ var DragDropTouch;
                 var target = this._getTarget(e);
                 if (this._dispatchEvent(e, 'mousemove', target)) {
                     this._lastTouch = e;
-                    e.preventDefault();
-                    return;
+                    if (e.cancelable) {
+                        e.preventDefault();
+                    }
+                return;
                 }
                 // start dragging
                 if (this._dragSource && !this._img && this._shouldStartDragging(e)) {
@@ -226,7 +232,9 @@ var DragDropTouch;
                 // continue dragging
                 if (this._img) {
                     this._lastTouch = e;
-                    e.preventDefault(); // prevent scrolling
+                    if (e.cancelable) {
+                        e.preventDefault(); // prevent scrolling
+                    }
                     if (target != this._lastTarget) {
                         this._dispatchEvent(this._lastTouch, 'dragleave', this._lastTarget);
                         this._dispatchEvent(e, 'dragenter', target);
@@ -241,7 +249,9 @@ var DragDropTouch;
             if (this._shouldHandle(e)) {
                 // see if target wants to handle up
                 if (this._dispatchEvent(this._lastTouch, 'mouseup', e.target)) {
-                    e.preventDefault();
+                    if (e.cancelable) {
+                        e.preventDefault();
+                    }
                     return;
                 }
                 // user clicked the element but didn't drag, so clear the source and simulate a click
