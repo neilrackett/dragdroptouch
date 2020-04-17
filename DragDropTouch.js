@@ -221,7 +221,7 @@ var DragDropTouch;
                     if (e.cancelable) {
                         e.preventDefault();
                     }
-                return;
+                    return;
                 }
                 // start dragging
                 if (this._dragSource && !this._img && this._shouldStartDragging(e)) {
